@@ -1,6 +1,6 @@
 # Code
 
-## [MFRC522](/RC522)
+## [MFRC522](./RC522)
 
 The card reader that we are using is of the MFRC522 chipset. Currently, there is not a native solution for the Particle family to use this sensor. Thus, a custom library has been made to interface it with the Spark Core: [RC522 Library](https://github.com/pkourany/RC522_RFID)
 
