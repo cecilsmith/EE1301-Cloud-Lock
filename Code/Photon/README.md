@@ -10,5 +10,7 @@ More information on the SPI interface for the Particle boards can be found here 
 
 Particle also has a handy manual for porting libraries found [here](https://docs.particle.io/firmware/best-practices/libraries/).
 
+Others have run into this issue as well, the forum post and answers are [here](https://community.particle.io/t/getting-the-rfid-rc522-to-work-solved/3571/22).
+
 ## 
 
