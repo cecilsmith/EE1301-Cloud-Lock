@@ -23,9 +23,12 @@ The project has been split into three main groups [CAD](/CAD), [Code](/Code), an
 
 ## Hardware Overview
 
-### Parts
+### Parts (with Amazon links when applicable) 
 
-TBA
+* [MFRC-522 RFID](https://www.amazon.com/HiLetgo-3pcs-RFID-Kit-Raspberry/dp/B07VLDSYRW/ref=sr_1_4?crid=18DCORKSJPHS6&keywords=mfrc522&qid=1682445511&sprefix=mfrc522%2Caps%2C181&sr=8-4) sensor: Used to read/write to keycards
+* [Servos](https://www.amazon.com/Micro-Servos-Helicopter-Airplane-Controls/dp/B07MLR1498/ref=sr_1_9?crid=22NEKGHONQT6A&keywords=servo&qid=1682445555&sprefix=servo%2Caps%2C169&sr=8-9&th=1) (x2): Used to lock/unlock the lock and open/close the door
+* [Potentiometer](https://www.amazon.com/MCIGICM-Breadboard-Trim-Potentiometer-Arduino/dp/B07S69443J/ref=sr_1_5?crid=3V138KBELQCXL&keywords=potentiometer&qid=1682445588&sprefix=potentiometer%2Caps%2C226&sr=8-5): Used to control the state of the door operations
+* [Particle Photon](https://docs.particle.io/photon/): Embedded deviced used to control all functions and send/recieve Cloud data
 
 ### Circuit Diagram
 
