@@ -1,0 +1,59 @@
+body {
+    text-align: center;
+    margin-top: 5%;
+    background-color: ghostwhite;
+}
+
+form {
+    min-width: 300px;
+}
+
+.form-field {
+    font-size: inherit;
+    margin: 15px 0;
+    padding: 12px 20px;
+    width: 100%;
+}
+
+#data {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+#submissionbutton {
+    background-color: rgb(48, 121, 72);
+    border: 1px solid black;
+    color: white;
+    width: 100px;
+    font-size: inherit;
+    margin: 15px 0;
+    padding: 12px 20px;
+}
+
+#connectbutton {
+    background-color: rgb(13, 128, 144);
+    border: 1px solid black;
+    color: white;
+    width: 75px;
+    margin: 15px 0;
+    padding: 5px 5px;
+}
+
+.hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+#lock_state {
+    font-weight: bold;
+}
+
+.subtext {
+    font-weight: 200;
+    font-size: smaller;
+}
