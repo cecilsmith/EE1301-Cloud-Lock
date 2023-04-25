@@ -1,53 +1,223 @@
-#include<iostream>
-#include<string>
-#include<string.h>
-#include<fstream>
-#include<cstdlib>
-#include<iostream>
-using namespace std;
+#include "Particle.h"
+#include "RFID.h"
 
-class keyCard
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
+
+// SERVO FOR LOCK IS D2
+// SERVO FOR DOOR IS D3
+// POTENTIOMETER ON PIN A1
+
+/* Define the pins used for the SS (SDA) and RST (reset) pins for BOTH hardware and software SPI */
+/* Change as required */
+#define SS_PIN A2  // Same pin used as hardware SPI (SS)
+#define RST_PIN D4 // D2
+
+/* Define the pins used for the DATA OUT (MOSI), DATA IN (MISO) and CLOCK (SCK) pins for SOFTWARE SPI ONLY */
+/* Change as required and may be same as hardware SPI as listed in comments */
+#define MOSI_PIN A5 // D3 // hardware SPI: A5
+#define MISO_PIN A4 // D4 //     "     " : A4
+#define SCK_PIN A3  // D5 //     "     " : A3
+
+/* Create an instance of the RFID library */
+#if defined(_USE_SOFT_SPI_)
+RFID RC522(SS_PIN, RST_PIN, MOSI_PIN, MISO_PIN, SCK_PIN); // Software SPI
+#else
+RFID RC522(SS_PIN, RST_PIN); // Hardware SPI
+#endif
+
+//-------------------------------------------
+
+// Class declaration here because multi-file importing was not working
+class Lock
 {
-    private:
-        bool lockStatus;
-        char inputIoTpsw[7];
-        char IoTpsw[7];
-    public:
-        void getIoTpsw();
-        void checkIoTpsw();   
-        void checkResult();  
+
+public:
+    Lock(unsigned int closedPOS, unsigned int openPOS);
+    void begin(int servoPin);
+    void secure();
+    void unlock();
+    bool getLockState();
+
+protected:
+    bool isLocked = false; // true locked, false unlocked
+    unsigned int lockedPOS, unlockedPOS;
+    Servo lockServo;
 };
 
-void keyCard::getIoTpsw()
+Lock::Lock(unsigned int closedPOS, unsigned int openPOS)
 {
-    cout << "Enter IoT Password: ";
-    cin >> inputIoTpsw;
+    lockedPOS = closedPOS;
+    unlockedPOS = openPOS;
 }
 
-void keyCard::checkIoTpsw(char password)
+void Lock::begin(int servoPin)
 {
-    if(inputIoTpsw == IoTpsw)
-        lockStatus = 1;
-    else
-        lockStatus = 0;
-
-    // if correct, return 1
+    Lock::lockServo.attach(servoPin);
 }
 
-void keyCard::checkResult()
+void Lock::secure()
 {
-    if(lockStatus = 1)
-        cout << "Correct password." << endl;
-    else
-        cout << "Incorrect password." << endl;
+    if (isLocked == false)
+    {
+        Lock::lockServo.write(lockedPOS);
+        isLocked = true;
+    }
 }
 
-void setup() {
-
+void Lock::unlock()
+{
+    if (isLocked == true)
+    {
+        Lock::lockServo.write(unlockedPOS);
+        isLocked = false;
+    }
 }
 
-void loop() {
-    // if Cloud update
-        // if cloud.pswd == keycard.pswd
-            // lockstatus = !lockstatus;
+bool Lock::getLockState()
+{
+    return isLocked;
+}
+
+//-------------------------------------------
+
+Lock lock1(0, 90);
+bool handicapMode = false;
+int potentiometerReading;
+Servo doorServo;
+
+String Password = "testPassword";
+uint8_t keyCard[5] = {234, 199, 97, 191, 243};
+
+bool LockState, doorState;
+uint32_t lastReadTime = 0;
+uint32_t timeSinceLastCardUpdate = 0;
+int doorClosePos, doorOpenPos;
+
+//-------------------------------------------
+
+int checkIOTPassword(String inputString)
+{
+    // If password matches:
+    if (inputString == Password)
+    {
+        // Lock if unlocked
+        if (lock1.getLockState() == false)
+        {
+            if (doorServo.read() != doorClosePos)
+            {
+                doorServo.write(doorClosePos);
+            }
+            delay(250);
+            lock1.secure();
+        }
+        else
+        {
+            lock1.unlock();
+            if (handicapMode)
+            {
+                delay(250);
+                doorServo.write(doorOpenPos);
+            }
+        }
+    }
+    return 1;
+}
+
+//-------------------------------------------
+
+void setup()
+{
+    LockState = lock1.getLockState();
+    Particle.variable("cV_isDoorOpen", doorState);
+    Particle.variable("cV_isLocked", LockState);
+    Particle.function("cF_lockForm", checkIOTPassword);
+    Particle.connect();
+
+    lock1.begin(D2);
+    doorServo.attach(D3);
+
+    // Potentiometer
+    pinMode(A1, INPUT);
+
+    // For MFRC
+#if !defined(_USE_SOFT_SPI_)
+    /* Enable the HW SPI interface */
+    SPI.setDataMode(SPI_MODE0);
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setClockDivider(SPI_CLOCK_DIV8);
+    SPI.begin();
+#endif
+
+    /* Initialise the RFID reader */
+    RC522.init();
+}
+
+void loop()
+{
+    if (Particle.connected() == false)
+    {
+        Particle.connect();
+    }
+
+    LockState = lock1.getLockState();
+
+    //-----------------
+    /* Has a card been detected? */
+
+    if ((millis() - lastReadTime) > 250)
+    {
+        // Analog read of potentiometer for auto-door opening mode
+        if (analogRead(A1) > 512)
+        {
+            handicapMode = true;
+        }
+        else
+        {
+            handicapMode = false;
+        }
+
+        // --------------------
+        if (RC522.isCard())
+        {
+            /* If so then get its serial number */
+            RC522.readCardSerial();
+
+            Serial.println("Card detected:");
+
+            /* Output the serial number to the UART */
+            uint8_t i;
+            // Set initial condition of CardReader to have a match
+            // If not matching, boolean will be set to false
+            bool match = true;
+            for (i = 0; i <= 4; i++)
+            {
+                Serial.print(RC522.serNum[i]);
+                Serial.print(" ");
+                if (RC522.serNum[i] != keyCard[i])
+                {
+                    match = false;
+                }
+            }
+            Serial.println();
+            if (match && ((millis() - timeSinceLastCardUpdate) > 2500))
+            {
+                timeSinceLastCardUpdate = millis();
+                // Lock if unlocked
+                if (LockState == false)
+                {
+                    lock1.secure();
+                }
+                else
+                {
+                    lock1.unlock();
+                }
+            }
+        }
+        else
+            Serial.println("Card NOT detected:");
+        lastReadTime = millis();
+    }
+
+    Particle.process();
 }
