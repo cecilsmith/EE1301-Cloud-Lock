@@ -7,6 +7,9 @@
 
 This folder contains the elements of the web application. To run, open `index.html` in the browser of your choice.
 
+<img src="https://user-images.githubusercontent.com/19243227/234357485-01e98943-4a46-47be-8bce-d8a0f58fe6df.png">
+
+
 A JSON request is made each second to the Particle Cloud to get the `LockState` variable. A form is below it to submit a password that to toggle lock/unlock states. The password entered is checked locally on the Photon board through a comparison of strings. Future revisons could include a way to update/reset the password on the Photon board--and store that password in non-volatile memory (EEPROM). 
 
 ## Content
