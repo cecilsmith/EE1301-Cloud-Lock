@@ -206,11 +206,21 @@ void loop()
                 // Lock if unlocked
                 if (LockState == false)
                 {
+                    if (doorServo.read() != doorClosePos)
+                    {
+                        doorServo.write(doorClosePos);
+                    }
+                    delay(250);
                     lock1.secure();
                 }
                 else
                 {
                     lock1.unlock();
+                    if (handicapMode)
+                    {
+                        delay(250);
+                        doorServo.write(doorOpenPos);
+                    }
                 }
             }
         }
