@@ -26,6 +26,8 @@ RFID RC522(SS_PIN, RST_PIN, MOSI_PIN, MISO_PIN, SCK_PIN); // Software SPI
 RFID RC522(SS_PIN, RST_PIN); // Hardware SPI
 #endif
 
+int doorClosePos = 48, doorOpenPos = 134;
+
 //-------------------------------------------
 
 // Class declaration here because multi-file importing was not working
@@ -38,6 +40,7 @@ public:
     void secure();
     void unlock();
     bool getLockState();
+    int servoRead();
 
 protected:
     bool isLocked = false; // true locked, false unlocked
@@ -79,9 +82,14 @@ bool Lock::getLockState()
     return isLocked;
 }
 
+int Lock::servoRead()
+{
+    return lockServo.read();
+}
+
 //-------------------------------------------
 
-Lock lock1(0, 90);
+Lock lock1(90, 180);
 bool handicapMode = false;
 int potentiometerReading;
 Servo doorServo;
@@ -92,7 +100,6 @@ uint8_t keyCard[5] = {234, 199, 97, 191, 243};
 bool LockState, doorState;
 uint32_t lastReadTime = 0;
 uint32_t timeSinceLastCardUpdate = 0;
-int doorClosePos, doorOpenPos;
 
 //-------------------------------------------
 
@@ -151,10 +158,17 @@ void setup()
 
     /* Initialise the RFID reader */
     RC522.init();
+
+    lock1.unlock();
 }
 
 void loop()
 {
+    Serial.print("Door: ");
+    Serial.println(doorServo.read());
+    Serial.print("Lock: ");
+    Serial.println(lock1.servoRead());
+
     if (Particle.connected() == false)
     {
         Particle.connect();
