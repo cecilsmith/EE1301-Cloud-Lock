@@ -1,13 +1,67 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-    <link href="/Code/Web/script.js" rel="script">
-    <title>Automated Lock</title>
+    <title>EE1301 Cloud Lock</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
+<script type="text/javascript">
+    var deviceID = "YOUR_DEVICE_ID";
+    var accessToken = "YOUR_ACCESS_TOKEN";
+    var baseURL = "https://api.particle.io/v1/devices/"
+
+    var lockedVar = "cV_isLocked"; // your cloud variable name goes here
+
+    function start(objButton) {
+        requestURL = baseURL + deviceID + "/" + lockedVar + "/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if (json.result == true) {
+                document.getElementById("lock_state").innerHTML = " Locked";
+            } else {
+                document.getElementById("lock_state").innerHTML = " Unlocked";
+            }
+        });
+    }
+
+    window.setInterval(function() {
+        requestURL = "https://api.particle.io/v1/devices/" + deviceID + "/" + lockedVar + "/?access_token=" + accessToken;
+        $.getJSON(requestURL, function(json) {
+            if (json.result == true) {
+                document.getElementById("lock_state").innerHTML = " Locked";
+            } else {
+                document.getElementById("lock_state").innerHTML = " Unlocked";
+            }
+        });
+    }, 1000);
+</script>
+
 <body>
-    <h3>Cloud Lock</h3>
+    <h3>1301 Final Project Cloud Lock Control</h3><br>
+    <div id="data">
+        Current Lock State:<span id="lock_state"></span>
+        <br>
+        <button id="connectbutton" onclick="start()">Refresh Data</button>
+    </div>
+    <br>
+    <div class="form">
+        <p>
+            Enter the password below to unlock/lock the lock.
+        </p>
+
+        <div class="subtext">
+            <p>
+                Password is: "testPassword"
+            </p>
+        </div>
+        <br>
+        <form action="https://api.particle.io/v1/devices/PHOTON_NAME/cF_lockForm?access_token=TOKEN_ID" method="POST">
+            <input type="password" name="args" value="***"><br>
+
+            <button id="submissionbutton" type="submit" value="Submit">Submit</button>
+
+        </form>
+    </div>
 </body>
 
 </html>
