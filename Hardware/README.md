@@ -2,7 +2,7 @@
 
 ## Schematic
 
-
+![image](https://github.com/cecilsmith/EE1301-Cloud-Lock/blob/main/Hardware/EE1301-CloudLock-Schematic.tiff)
 
 ## Parts (with Amazon links when applicable) 
 
