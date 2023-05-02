@@ -11,7 +11,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 /* Define the pins used for the SS (SDA) and RST (reset) pins for BOTH hardware and software SPI */
 /* Change as required */
 #define SS_PIN A2  // Same pin used as hardware SPI (SS)
-#define RST_PIN D4 // D2
+#define RST_PIN D4
 
 /* Define the pins used for the DATA OUT (MOSI), DATA IN (MISO) and CLOCK (SCK) pins for SOFTWARE SPI ONLY */
 /* Change as required and may be same as hardware SPI as listed in comments */
