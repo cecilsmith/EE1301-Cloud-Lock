@@ -164,11 +164,6 @@ void setup()
 
 void loop()
 {
-    Serial.print("Door: ");
-    Serial.println(doorServo.read());
-    Serial.print("Lock: ");
-    Serial.println(lock1.servoRead());
-
     if (Particle.connected() == false)
     {
         Particle.connect();
@@ -204,6 +199,7 @@ void loop()
             // Set initial condition of CardReader to have a match
             // If not matching, boolean will be set to false
             bool match = true;
+            // Loop through the 5 serial bytes of the RFID Card, if not matching, skip
             for (i = 0; i <= 4; i++)
             {
                 Serial.print(RC522.serNum[i]);
@@ -211,11 +207,14 @@ void loop()
                 if (RC522.serNum[i] != keyCard[i])
                 {
                     match = false;
+                    return;
                 }
             }
             Serial.println();
+            // If there is a match and the time has passed
             if (match && ((millis() - timeSinceLastCardUpdate) > 2500))
             {
+                // Update time
                 timeSinceLastCardUpdate = millis();
                 // Lock if unlocked
                 if (LockState == false)
