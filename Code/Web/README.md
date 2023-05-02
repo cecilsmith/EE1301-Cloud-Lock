@@ -1,4 +1,4 @@
-# Web
+# Web Code
 <a href="https://ee1301-cloud-lock.pages.dev">
 <img alt="QR Code to the Webpage" src="https://user-images.githubusercontent.com/19243227/234263369-41c31e79-d60b-4de8-b06b-b4c7a5888636.png"></img>
 </a>
