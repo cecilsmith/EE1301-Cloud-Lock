@@ -2,7 +2,9 @@
 
 ## Schematic
 
-![image](https://github.com/cecilsmith/EE1301-Cloud-Lock/blob/main/Hardware/EE1301-CloudLock-Schematic.tiff)
+Below is the schematic for the project. The KiCad project can be viewed under the [`/CloudLock`](/Hardware/CloudLock) folder.
+
+![image](https://user-images.githubusercontent.com/19243227/235766099-5f77d163-186c-4933-8021-36865a715c32.png)
 
 ## Parts (with Amazon links when applicable) 
 
