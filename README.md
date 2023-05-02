@@ -32,7 +32,9 @@ The project has been split into three main groups [CAD](/CAD), [Code](/Code), an
 
 ### Circuit Diagram
 
-TBA
+Below is a schematic of the project. The KiCad project can be viewed/downloaded [here](/Hardware/CloudLock).
+
+![image](https://user-images.githubusercontent.com/19243227/235766099-5f77d163-186c-4933-8021-36865a715c32.png)
 
 ## Project Usage and Download
 
