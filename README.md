@@ -1,5 +1,8 @@
 # EE1301-Cloud-Lock
 
+![EE1301-Cloud-Lock Image](https://user-images.githubusercontent.com/19243227/235773640-bc56a2d0-ac2a-46a5-8ac7-a415ed053356.JPG)
+
+
 ## Team Members
 
 * Nathanael Smith - *smi02356*
